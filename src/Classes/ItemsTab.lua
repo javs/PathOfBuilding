@@ -793,6 +793,10 @@ holding Shift will put it in the second.]])
 		self:UpdateCustomControls()
 	end)
 
+	
+	-- Trade items list
+	self.controls.tradeList = new("ItemTradeControl", {"TOPRIGHT", self.controls.rareDB, "TOPLEFT"}, -20, -20, 380, 290, self)
+
 	-- Tooltip anchor
 	self.controls.displayItemTooltipAnchor = new("Control", {"TOPLEFT",self.controls.displayItemSectionRange,"BOTTOMLEFT"})
 
