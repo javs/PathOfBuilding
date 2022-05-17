@@ -10,11 +10,9 @@ local m_max = math.max
 local m_floor = math.floor
 
 
-local ItemTradeClass = newClass("ItemTradeControl", "ListControl", function(self, anchor, x, y, width, height, itemsTab, db, dbType)
+local ItemTradeClass = newClass("ItemTradeControl", "ListControl", function(self, anchor, x, y, width, height, itemsTab)
 	self.ListControl(anchor, x, y, width, height, 16, "VERTICAL", false)
 	self.itemsTab = itemsTab
-	self.db = db
-	self.dbType = dbType
 	self.dragTargetList = { }
 	self.sortControl = { 
 		NAME = { key = "name", dir = "ASCEND", func = function(a,b) return a:gsub("^The ","") < b:gsub("^The ","") end },
@@ -23,23 +21,8 @@ local ItemTradeClass = newClass("ItemTradeControl", "ListControl", function(self
 	self.sortDropList = { }
 	self.sortOrder = { }
 	self.sortMode = "NAME"
-	local leagueFlag = { }
 	local typeFlag = { }
-	for _, item in pairs(db.list) do
-		if item.league then
-			for leagueName in item.league:gmatch(" ?([%w ]+),?") do
-				leagueFlag[leagueName] = true
-			end
-		end
-		typeFlag[item.type] = true
-	end
-	self.leagueList = { }
-	for leagueName in pairs(leagueFlag) do
-		t_insert(self.leagueList, leagueName)
-	end
-	table.sort(self.leagueList)
-	t_insert(self.leagueList, 1, "Any league")
-	t_insert(self.leagueList, 2, "No league")
+
 	self.typeList = { }
 	for type in pairs(typeFlag) do
 		t_insert(self.typeList, type)
@@ -51,31 +34,34 @@ local ItemTradeClass = newClass("ItemTradeControl", "ListControl", function(self
 	t_insert(self.typeList, 4, "One Handed Melee")
 	t_insert(self.typeList, 5, "Two Handed Melee")
 	self.slotList = { "Any slot", "Weapon 1", "Weapon 2", "Helmet", "Body Armour", "Gloves", "Boots", "Amulet", "Ring", "Belt", "Jewel" }
-	local baseY = dbType == "RARE" and -22 or -62
-	self.controls.slot = new("DropDownControl", {"BOTTOMLEFT",self,"TOPLEFT"}, 0, baseY, 179, 18, self.slotList, function(index, value)
+
+	-- TODO: simplify offsets // offsets are based from the list up, hardcoded, that's why it's off. Also overall width needs to be re-hardcoded
+
+	-- First Row
+	self.controls.slot = new("DropDownControl", {"BOTTOMLEFT",self,"TOPLEFT"}, 0, -62, 179, 18, self.slotList, function(index, value)
 		self.listBuildFlag = true
 	end)
 	self.controls.type = new("DropDownControl", {"LEFT",self.controls.slot,"RIGHT"}, 2, 0, 179, 18, self.typeList, function(index, value)
 		self.listBuildFlag = true
 	end)
-	if dbType == "UNIQUE" then
-		self.controls.sort = new("DropDownControl", {"BOTTOMLEFT",self,"TOPLEFT"}, 0, baseY + 20, 179, 18, self.sortDropList, function(index, value)
-			self:SetSortMode(value.sortMode)
-			GlobalCache.useFullDPS = value.sortMode == "FullDPS"
-		end)
-		self.controls.league = new("DropDownControl", {"LEFT",self.controls.sort,"RIGHT"}, 2, 0, 179, 18, self.leagueList, function(index, value)
-			self.listBuildFlag = true
-		end)
-		self.controls.requirement = new("DropDownControl", {"LEFT",self.controls.sort,"BOTTOMLEFT"}, 0, 11, 179, 18, { "Any requirements", "Current level", "Current attributes", "Current useable" }, function(index, value)
-			self.listBuildFlag = true
-		end)
-	end
-	self.controls.search = new("EditControl", {"BOTTOMLEFT",self,"TOPLEFT"}, 0, -2, 258, 18, "", "Search", "%c", 100, function()
+
+	-- Second Row
+	self.controls.sort = new("DropDownControl", {"BOTTOMLEFT",self,"TOPLEFT"}, 0, -62 + 20, 179, 18, self.sortDropList, function(index, value)
+		self:SetSortMode(value.sortMode)
+		GlobalCache.useFullDPS = value.sortMode == "FullDPS"
+	end)
+	self.controls.requirement = new("DropDownControl", {"LEFT",self.controls.sort,"RIGHT"}, 2, 0, 179, 18, { "Any requirements", "Current level", "Current attributes", "Current useable" }, function(index, value)
+		self.listBuildFlag = true
+	end)
+
+	-- Third Row
+	self.controls.search = new("EditControl", {"TOPLEFT",self.controls.sort,"BOTTOMLEFT"}, 0, -2, 258, 18, "", "Search", "%c", 100, function()
 		self.listBuildFlag = true
 	end)
 	self.controls.searchMode = new("DropDownControl", {"LEFT",self.controls.search,"RIGHT"}, 2, 0, 100, 18, { "Anywhere", "Names", "Modifiers" }, function(index, value)
 		self.listBuildFlag = true
 	end)
+
 	self:BuildSortOrder()
 	self.listBuildFlag = true
 end)
@@ -106,12 +92,7 @@ function ItemTradeClass:DoesItemMatchFilters(item)
 			return false
 		end
 	end
-	if self.dbType == "UNIQUE" and self.controls.league.selIndex > 1 then
-		if (self.controls.league.selIndex == 2 and item.league) or (self.controls.league.selIndex > 2 and (not item.league or not item.league:match(self.leagueList[self.controls.league.selIndex]))) then
-			return false
-		end
-	end
-	if self.dbType == "UNIQUE" and self.controls.requirement.selIndex > 1 then
+	if self.controls.requirement.selIndex > 1 then
 		if (self.controls.requirement.selIndex == 2 or self.controls.requirement.selIndex == 4) and item.requirements.level and item.requirements.level > self.itemsTab.build.characterLevel then
 			return false
 		end
@@ -198,11 +179,13 @@ end
 
 function ItemTradeClass:ListBuilder()
 	local list = { }
-	for id, item in pairs(self.db.list) do
-		if self:DoesItemMatchFilters(item) then
-			t_insert(list, item)
-		end
-	end
+
+	-- TODO: populate list
+	-- for id, item in pairs(self.db.list) do
+	-- 	if self:DoesItemMatchFilters(item) then
+	-- 		t_insert(list, item)
+	-- 	end
+	-- end
 
 	if self.sortDetail and self.sortDetail.stat then -- stat-based
 		local start = GetTime()
