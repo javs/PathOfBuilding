@@ -185,16 +185,16 @@
 	<File name="Data/StatDescriptions/single_minion_spell_skill_stat_descriptions.lua" part="program" sha1="3c9a68e0af6ebb8c210460f108c062502e247be3" />
 	<File name="Data/StatDescriptions/stat_descriptions.lua" part="program" sha1="2719166753da8060f837798d668a2833c543906c" />
 	<File name="Data/StatDescriptions/variable_duration_skill_stat_descriptions.lua" part="program" sha1="fbf3309032bb7288b085b9e001b962827218d4e6" />
-	<File name="Modules/Build.lua" part="program" sha1="32b8faa57c5b75a5793ef9c2e7723dec53431947" />
+	<File name="Modules/Build.lua" part="program" sha1="3821d33ca8d377f405dcd2869a706c6fb1071af0" />
 	<File name="Modules/BuildList.lua" part="program" sha1="5c5ee46b6dee4feb5bbfc2f5ef753073fa9303a9" />
 	<File name="Modules/BuildSiteTools.lua" part="program" sha1="0430081f6090c856b791aff6bbdf9a58d3672ed2" />
 	<File name="Modules/CalcActiveSkill.lua" part="program" sha1="4913fc1c106dfa7355e463907b5c2f3d1e501b1d" />
-	<File name="Modules/CalcBreakdown.lua" part="program" sha1="b90cd2cd732249f95b0d1d42bc809f6c0d679e20" />
+	<File name="Modules/CalcBreakdown.lua" part="program" sha1="ea4034f22c8379b9b9e14f437dacf11ebad9aa21" />
 	<File name="Modules/CalcDefence.lua" part="program" sha1="2869b3c24cf23c63116f91b0bffe8cc4adc0881b" />
-	<File name="Modules/CalcOffence.lua" part="program" sha1="983ce1ff1c82a6877bddb8b9828ba893c1378db3" />
+	<File name="Modules/CalcOffence.lua" part="program" sha1="96ae0bd6eb544346c5b9bef8851a0d2b38c2c4f9" />
 	<File name="Modules/CalcPerform.lua" part="program" sha1="22440b85124b172b65ef7f31caa1f8d8c321afb0" />
 	<File name="Modules/Calcs.lua" part="program" sha1="9cba82b0d41cfe6a2b2f5c152ba533a5293bc8df" />
-	<File name="Modules/CalcSections.lua" part="program" sha1="7e8447f6c4d32074061954f087c271705c1b0af0" />
+	<File name="Modules/CalcSections.lua" part="program" sha1="9704c6c9fbae1b01d2e50839349a561a43d0cd9d" />
 	<File name="Modules/CalcSetup.lua" part="program" sha1="5a15b7d4ede302c3a2b9269238df2e6d21337d0a" />
 	<File name="Modules/CalcTools.lua" part="program" sha1="a2ae43ca0141c862a67236f318fb25bac9670450" />
 	<File name="Modules/Common.lua" part="program" sha1="4805c3861e7f8820926f652540969cc8a113c0f0" />
